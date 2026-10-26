@@ -1,0 +1,146 @@
+
+"""Assignment practice"""
+
+#Q1 Load the bank customer dataset using Pandas.
+import pandas as pd
+df=pd.read_csv('bank_customer_messy_practice.csv')
+print(df)
+
+#**Q2.** Display the first 5 rows of the dataset.
+print(df.head())
+
+#**Q3.** Display the last 5 rows of the dataset.
+print(df.tail())
+
+#**Q4.** Display 10 random rows from the dataset.
+print(df.sample(10))
+
+#**Q5.** Find the total number of rows and columns.
+print(df.shape)
+
+#**Q6.** Display all column names.
+print(df.columns)
+
+#**Q7.** Check the data types of all columns.
+print(df.dtypes)
+
+#*Q8.** Display complete information about the dataset, including non-null values and data types.
+print(df.info())
+
+#**Q9.** Display the statistical summary of numerical columns.
+print(df.describe())
+
+#**Q10.** Display the statistical summary of categorical columns.
+print(df.describe(include=object))
+
+#*Q11.* Check whether the dataset contains any missing values.
+df.isnull()
+
+#*Q12.* Count the missing values in each column.
+print(df.isnull().sum())
+
+#*Q13.* Calculate the total number of missing values in the entire dataset.
+print(df.isnull().sum().sum())
+
+#*Q14.* Calculate the percentage of missing values in each column.
+print(((df.isnull().sum())/(len(df)))*100)
+
+#*Q15.* Display all rows containing at least one missing value.
+df[df.isnull().any(axis=1)]
+
+#*Q16.* Display only the rows where Monthly_Income is missing.
+print(df[df["Monthly_Income"].isnull()])
+
+#*Q18.* Find the columns that contain missing values.
+print(df.columns[df.isnull().any()])
+
+#*Q19.* Fill missing values in Monthly_Income with the median income.
+median_income=df['Monthly_Income'].median()
+df['Monthly_Income'].fillna(median_income,inplace=True)
+df
+
+#*Q20.* Fill missing values in Credit_Score with the median credit score.
+median_credit_score=df['Credit_Score'].median()
+df['Credit_Score'].fillna(median_credit_score,inplace=True)
+df
+
+"""### Module 3: Check Duplicate Values
+
+"""
+
+#*Q21.* Check whether duplicate rows exist in the dataset.
+print(df.duplicated().any())
+print("Number of duplicate rows:", df.duplicated().sum())
+
+#*Q22.* Count the total number of duplicate rows.
+print(df.duplicated().sum())
+
+#*Q23.* Display all duplicate rows.
+print(df.duplicated())
+
+#*Q24.* Check for duplicate values in the Customer_ID column.
+print("Are there duplicates in Customer_ID?", df['Customer_ID'].duplicated().any())
+print("Number of duplicate Customer_IDs:", df['Customer_ID'].duplicated().sum())
+
+#*Q25.* Display rows containing duplicate customer IDs.
+duplicate_ids=df[df['Customer_ID'].duplicated()]
+print(duplicate_ids)
+
+#*Q26.* Remove duplicate rows from the dataset.
+df.drop_duplicates(inplace=True)
+print(df.shape)
+
+#*Q27.* Check again to confirm whether duplicate rows remain.
+print(df.duplicated().any())
+print(df.duplicated().sum())
+
+"""### Module 4: Value Counts and Unique Values
+
+"""
+
+#*Q28.* Count the number of customers in each gender category.
+print(df["Gender"].value_counts())
+
+#*Q29.* Find the number of customers in each city.
+print(df['City'].value_counts())
+
+#*Q30.* Count the number of customers with Savings and Current accounts.
+df["Account_Type"].value_counts()
+
+#*Q31.* Count active and inactive customers.
+df['Active_Customer'].value_counts()
+
+#*Q32.* Find the unique values in the Gender column.
+print(df['Gender'].unique())
+
+#*Q33.* Find the unique values in the City column.
+print(df['City'].unique())
+
+#*Q34.* Count the number of unique cities.
+print(df['City'].nunique())
+
+#*Q35.* Display the frequency of each value in the Gender column, including missing values.
+print(df['Gender'].value_counts(dropna=True))
+
+"""### Module 5: Clean Text Data
+
+"""
+
+#*Q36.* Remove extra spaces from the Name column.
+df['Name']=df['Name'].str.strip()
+df['Name']
+
+#*Q37.* Standardize the values in the Gender column so that M, Male, and MALE are represented consistently. Do the same for female values.
+
+# Reload original Gender column to discard messed up values
+original_df = pd.read_csv('bank_customer_messy_practice.csv')
+df['Gender'] = original_df['Gender']
+
+# Standardize Gender cleanly using mapping
+gender_map = {
+    'Female': 'Female', 'female ': 'Female', 'female': 'Female', 'FEMALE': 'Female', 'F': 'Female',
+    'Male': 'Male', 'Male ': 'Male', 'male': 'Male', 'MALE': 'Male', 'M': 'Male'
+}
+df['Gender'] = df['Gender'].map(gender_map)
+print(df['Gender'].value_counts(dropna=False))
+
